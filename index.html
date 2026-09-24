@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Merit — Earn Your Screen Time</title>
+  <meta name="description" content="Merit turns your physical activity and discipline into screen time credits. Break doomscrolling habits with on-device AI exercise tracking and time banking.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-gradient-start: #07172e;
+      --bg-gradient-end: #000000;
+      --scaffold-dark: #080c14;
+      --card-dark: #0f1626;
+      --card-glass: rgba(15, 22, 38, 0.75);
+      --card-hover: rgba(24, 34, 54, 0.85);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-focus: rgba(56, 189, 248, 0.3);
+      --brand-blue: #38bdf8;
+      --brand-blue-glow: rgba(56, 189, 248, 0.15);
+      --success-green: #22c55e;
+      --success-green-dim: rgba(34, 197, 94, 0.15);
+      --warning-amber: #f59e0b;
+      --text-primary: #ffffff;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --btn-white: #ffffff;
+      --btn-white-text: #080c14;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--scaffold-dark);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+      min-height: 100vh;
+      background-image: 
+        radial-gradient(circle at 50% 0%, #0d2346 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(56, 189, 248, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 10% 80%, rgba(34, 197, 94, 0.05) 0%, transparent 40%);
+      background-attachment: fixed;
+    }
+
+    /* Ambient Header Glow */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(8, 12, 20, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-subtle);
+      transition: all 0.3s ease;
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text-primary);
+      cursor: pointer;
+    }
+
+    .logo-badge {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #38bdf8 0%, #1e40af 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 14px rgba(56, 189, 248, 0.35);
+    }
+
+    .logo-badge svg {
+      width: 22px;
+      height: 22px;
+      fill: #ffffff;
+    }
+
+    .brand-name {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .brand-name span {
+      color: var(--brand-blue);
+    }
+
+    .nav-tabs {
+      display: flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 4px;
+      border-radius: 9999px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 8px 18px;
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      text-decoration: none;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-primary);
+    }
+
+    .tab-btn.active {
+      background: #ffffff;
+      color: var(--btn-white-text);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Container */
+    .main-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 5rem 1.5rem;
+    }
+
+    /* View Sections */
+    .view-section {
+      display: none;
+      animation: fadeIn 0.35s ease;
+    }
+
+    .view-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* --- HOME / LANDING PAGE HERO --- */
+    .hero {
+      text-align: center;
+      padding: 4rem 1rem 3rem 1rem;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--brand-blue-glow);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: var(--brand-blue);
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 5vw, 4.2rem);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -1.5px;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero h1 .highlight {
+      background: linear-gradient(135deg, #ffffff 30%, #38bdf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: clamp(1.05rem, 2vw, 1.25rem);
+      color: var(--text-muted);
+      line-height: 1.6;
+      max-width: 700px;
+      margin: 0 auto 2.5rem auto;
+      font-weight: 400;
+    }
+
+    .hero-actions {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--btn-white);
+      color: var(--btn-white-text);
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 14px 28px;
+      border-radius: 9999px;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 14px 26px;
+      border-radius: 9999px;
+      text-decoration: none;
+      border: 1px solid var(--border-subtle);
+      transition: background 0.2s, border-color 0.2s;
+      cursor: pointer;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Core Metrics Banner */
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+      margin: 3.5rem 0;
+    }
+
+    .metric-card {
+      background: var(--card-glass);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 1.75rem;
+      backdrop-filter: blur(12px);
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .metric-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--border-focus);
+    }
+
+    .metric-val {
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: var(--brand-blue);
+      margin-bottom: 0.25rem;
+    }
+
+    .metric-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .metric-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* Features Grid */
+    .section-header {
+      text-align: center;
+      margin: 4.5rem 0 2.5rem 0;
+    }
+
+    .section-header h2 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 0.75rem;
+    }
+
+    .section-header p {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .feature-card {
+      background: var(--card-glass);
+      border: 1px solid var(--border-subtle);
+      border-radius: 24px;
+      padding: 2rem;
+      backdrop-filter: blur(14px);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      transition: all 0.25s ease;
+    }
+
+    .feature-card:hover {
+      background: var(--card-hover);
+      border-color: var(--border-focus);
+      transform: translateY(-4px);
+    }
+
+    .icon-box {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--brand-blue);
+    }
+
+    .icon-box.green {
+      background: var(--success-green-dim);
+      border-color: rgba(34, 197, 94, 0.3);
+      color: var(--success-green);
+    }
+
+    .icon-box.amber {
+      background: rgba(245, 158, 11, 0.1);
+      border-color: rgba(245, 158, 11, 0.3);
+      color: var(--warning-amber);
+    }
+
+    .icon-box svg {
+      width: 26px;
+      height: 26px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+    }
+
+    .feature-card h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .feature-card p {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* Privacy Banner */
+    .privacy-banner {
+      background: linear-gradient(135deg, rgba(15, 22, 38, 0.9) 0%, rgba(7, 23, 46, 0.9) 100%);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 24px;
+      padding: 2.5rem;
+      margin: 4.5rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .privacy-banner::before {
+      content: '';
+      position: absolute;
+      top: -50px;
+      right: -50px;
+      width: 150px;
+      height: 150px;
+      background: rgba(56, 189, 248, 0.15);
+      border-radius: 50%;
+      filter: blur(40px);
+    }
+
+    .privacy-banner h3 {
+      font-size: 1.6rem;
+      font-weight: 800;
+    }
+
+    .privacy-banner p {
+      color: var(--text-muted);
+      font-size: 1rem;
+      max-width: 780px;
+      line-height: 1.6;
+    }
+
+    /* --- LEGAL DOCUMENT VIEW (PRIVACY & TERMS) --- */
+    .legal-container {
+      max-width: 860px;
+      margin: 1.5rem auto 0 auto;
+      background: var(--card-glass);
+      border: 1px solid var(--border-subtle);
+      border-radius: 24px;
+      padding: 3rem 2.5rem;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    @media (max-width: 768px) {
+      .legal-container {
+        padding: 2rem 1.25rem;
+      }
+      .nav-container {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .nav-tabs {
+        width: 100%;
+        justify-content: center;
+      }
+      .tab-btn {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+      }
+    }
+
+    .legal-header {
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .legal-tag {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--brand-blue);
+      background: var(--brand-blue-glow);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      padding: 4px 12px;
+      border-radius: 9999px;
+      margin-bottom: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .legal-header h1 {
+      font-size: 2.2rem;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      margin-bottom: 0.5rem;
+    }
+
+    .legal-meta {
+      font-size: 0.9rem;
+      color: var(--text-dim);
+    }
+
+    .legal-body {
+      font-size: 1rem;
+      line-height: 1.75;
+      color: #cbd5e1;
+    }
+
+    .legal-body h2, .legal-body h3 {
+      color: var(--text-primary);
+      font-weight: 700;
+      margin-top: 2rem;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.3px;
+    }
+
+    .legal-body h3 {
+      font-size: 1.25rem;
+      color: #f1f5f9;
+    }
+
+    .legal-body h4 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--brand-blue);
+      margin-top: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .legal-body p {
+      margin-bottom: 1.25rem;
+    }
+
+    .legal-body ul {
+      margin-left: 1.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .legal-body li {
+      margin-bottom: 0.5rem;
+    }
+
+    .legal-body strong {
+      color: #ffffff;
+    }
+
+    .legal-body hr {
+      border: none;
+      border-top: 1px solid var(--border-subtle);
+      margin: 2.5rem 0;
+    }
+
+    .alert-box {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 14px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+      color: #fca5a5;
+    }
+
+    .alert-box strong {
+      color: #fecaca;
+    }
+
+    .contact-card {
+      background: rgba(56, 189, 248, 0.06);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .contact-card a {
+      color: var(--brand-blue);
+      text-decoration: underline;
+      font-weight: 600;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 3rem 1.5rem;
+      margin-top: 4rem;
+      background: rgba(8, 12, 20, 0.95);
+      text-align: center;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.75rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: color 0.2s;
+      cursor: pointer;
+    }
+
+    .footer-links a:hover {
+      color: var(--text-primary);
+    }
+
+    .footer-copy {
+      color: var(--text-dim);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVIGATION BAR -->
+  <header>
+    <div class="nav-container">
+      <a class="brand-logo" onclick="switchTab('home')">
+        <div class="logo-badge">
+          <!-- Hourglass & Shield SVG -->
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm0 4a3 3 0 0 1 3 3c0 1.3-.84 2.4-2 2.82V14h2v2h-2v2h-2v-2H9v-2h2v-2.18c-1.16-.42-2-1.52-2-2.82a3 3 0 0 1 3-3z"/>
+          </svg>
+        </div>
+        <div class="brand-name">MERIT<span>.</span></div>
+      </a>
+
+      <nav class="nav-tabs">
+        <button class="tab-btn active" id="tab-btn-home" onclick="switchTab('home')">Home</button>
+        <button class="tab-btn" id="tab-btn-privacy" onclick="switchTab('privacy')">Privacy Policy</button>
+        <button class="tab-btn" id="tab-btn-terms" onclick="switchTab('terms')">Terms of Service</button>
+      </nav>
+    </div>
+  </header>
+
+  <div class="main-wrap">
+
+    <!-- ========================================== -->
+    <!-- 1. HOME / LANDING PAGE VIEW -->
+    <!-- ========================================== -->
+    <div id="view-home" class="view-section active">
+      
+      <!-- HERO -->
+      <section class="hero">
+        <div class="badge-pill">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Digital Discipline & Screen Time Banking
+        </div>
+        <h1>Stop Mindless Scrolling.<br><span class="highlight">Earn Every Minute.</span></h1>
+        <p>Merit converts your real-world physical movement, outdoor runs, and workout discipline into screen time allowance. Take back your focus and eliminate doomscrolling.</p>
+        
+        <div class="hero-actions">
+          <a class="btn-primary" onclick="switchTab('privacy')">
+            Review Privacy Standards
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a class="btn-secondary" onclick="switchTab('terms')">
+            Terms of Service
+          </a>
+        </div>
+      </section>
+
+      <!-- KEY METRICS BANNER -->
+      <section class="metric-grid">
+        <div class="metric-card">
+          <div class="metric-val">100%</div>
+          <div class="metric-title">On-Device Privacy</div>
+          <div class="metric-desc">Camera feeds and app usage stay strictly in your device's memory. No video or usage history is ever sent to any cloud server.</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-val">+10 Min</div>
+          <div class="metric-title">Screen Time Per 1,000 Steps</div>
+          <div class="metric-desc">Turn physical movement into app credits. Walk, run, or cycle to earn leisure time on your favorite social apps.</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-val">Strict Mode</div>
+          <div class="metric-title">Anti-Uninstall Shield</div>
+          <div class="metric-desc">Device Administrator protection and a 10-second reflection timer stop impulsive uninstalls and mid-lock temptations.</div>
+        </div>
+      </section>
+
+      <!-- FEATURES SECTION -->
+      <section>
+        <div class="section-header">
+          <h2>Engineered for Uncompromising Focus</h2>
+          <p>Every feature in Merit is purpose-built to break dopamine loops without invading your personal privacy.</p>
+        </div>
+
+        <div class="feature-grid">
+          <!-- Feature 1 -->
+          <div class="feature-card">
+            <div class="icon-box">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <h3>Time Bank Engine</h3>
+            <p>Set a disciplined daily free allowance. Once exhausted, all recreational apps lock securely until you complete physical movement or focus tasks.</p>
+          </div>
+
+          <!-- Feature 2 -->
+          <div class="feature-card">
+            <div class="icon-box green">
+              <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            </div>
+            <h3>AI Pose Detection Planks</h3>
+            <p>Google ML Kit analyzes skeletal landmarks live through your camera to verify plank posture. Frames are processed instantly in RAM and discarded immediately.</p>
+          </div>
+
+          <!-- Feature 3 -->
+          <div class="feature-card">
+            <div class="icon-box">
+              <svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </div>
+            <h3>Pedometer & Smartwatch Sync</h3>
+            <p>Seamless background tracking records your outdoor runs and daily step counts, converting active lifestyle habits into productive screen time.</p>
+          </div>
+
+          <!-- Feature 4 -->
+          <div class="feature-card">
+            <div class="icon-box amber">
+              <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <h3>Strict Mode & 10s Reflection</h3>
+            <p>Device Administrator protection disables uninstallation while blocked. A mandatory 10-second cooling delay prevents panic disablement.</p>
+          </div>
+
+          <!-- Feature 5 -->
+          <div class="feature-card">
+            <div class="icon-box">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+            </div>
+            <h3>Global Athlete Leaderboard</h3>
+            <p>Compete in weekly distance and step cycles against users worldwide. Climb ranks while reclaiming hours of your daily life.</p>
+          </div>
+
+          <!-- Feature 6 -->
+          <div class="feature-card">
+            <div class="icon-box green">
+              <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <h3>Zero Data Monetization</h3>
+            <p>No ad trackers, no third-party data broker SDKs, and zero telemetry profiling. We build software for athletes and high performers, not advertisers.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- PRIVACY HIGHLIGHT BANNER -->
+      <section class="privacy-banner">
+        <h3>Our Zero-Compromise Privacy Promise</h3>
+        <p>Unlike conventional screen time apps that sell your usage habits to data brokers, Merit processes your app usage statistics, camera exercise frames, and location verification 100% locally on your device.</p>
+        <div>
+          <button class="btn-primary" onclick="switchTab('privacy')">Read Full Privacy Policy</button>
+        </div>
+      </section>
+
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- 2. PRIVACY POLICY VIEW -->
+    <!-- ========================================== -->
+    <div id="view-privacy" class="view-section">
+      <div class="legal-container">
+        <div class="legal-header">
+          <span class="legal-tag">Official Legal Document</span>
+          <h1>Privacy Policy</h1>
+          <div class="legal-meta">Last Updated: August 13, 2026 • Effective Date: August 13, 2026</div>
+        </div>
+
+        <div class="legal-body">
+          <p>Welcome to <strong>Merit</strong> ("the App", "we", "our", or "us"). We are committed to protecting your privacy and ensuring you have complete transparency regarding how your data is accessed, processed, and protected. This Privacy Policy governs your use of the Merit mobile application and related services.</p>
+
+          <hr>
+
+          <h3>1. OVERVIEW & LOCAL-FIRST PHILOSOPHY</h3>
+          <p>Merit is designed with a <strong>privacy-first, client-side architecture</strong>. The core functionality of Merit—tracking your screen time, blocking apps, counting workout repetitions via computer vision, calculating earned time credits, and logging habits—operates entirely on your local device. We do not sell, rent, monetize, or transmit your personal screen time history or exercise camera feeds to third-party advertisers or remote analytical brokers.</p>
+
+          <hr>
+
+          <h3>2. DATA WE ACCESS, PROCESS, AND STORE</h3>
+
+          <h4>2.1 Usage Statistics (<code>PACKAGE_USAGE_STATS</code>)</h4>
+          <ul>
+            <li><strong>What We Access:</strong> The App queries the Android <code>UsageStatsManager</code> and <code>UsageEvents</code> to determine the amount of time spent in active foreground applications.</li>
+            <li><strong>Purpose:</strong> To calculate your daily screen time, enforce your custom time limits and time banks, display usage statistics, and determine when an application should be locked.</li>
+            <li><strong>Storage & Transmission:</strong> All usage calculations and historical app statistics are processed and cached strictly <strong>locally on your device</strong>. They are never uploaded to any cloud server.</li>
+          </ul>
+
+          <h4>2.2 Device Administrator Permission (<code>BIND_DEVICE_ADMIN</code>)</h4>
+          <ul>
+            <li><strong>What We Access:</strong> When you optionally enable <strong>Strict Mode</strong>, Merit requests Device Administrator status (<code>TimeBankDeviceAdminReceiver</code>).</li>
+            <li><strong>Purpose:</strong> This permission is used exclusively to prevent accidental or compulsive uninstallation of the App while you are in a locked focus session.</li>
+            <li><strong>Control:</strong> You retain full control to disable Device Administrator access at any time through the Merit Settings screen or Android System Settings.</li>
+          </ul>
+
+          <h4>2.3 Camera & On-Device AI Pose Detection (<code>CAMERA</code>)</h4>
+          <ul>
+            <li><strong>What We Access:</strong> Real-time camera video stream during user-initiated physical workout tasks (Planks).</li>
+            <li><strong>Purpose:</strong> To analyze physical body joints (skeletal landmarks) via on-device Google ML Kit Pose Detection in order to accurately assess form and hold duration.</li>
+            <li><strong>Zero Video Recording / Transmission:</strong> <strong>Merit does not record, take snapshots, store, or transmit any video footage or camera images.</strong> Every video frame is analyzed instantly in memory on your physical hardware and immediately discarded.</li>
+          </ul>
+
+          <h4>2.4 Location Data (<code>ACCESS_FINE_LOCATION</code>, <code>ACCESS_COARSE_LOCATION</code>)</h4>
+          <ul>
+            <li><strong>What We Access:</strong> Approximate and precise geographic coordinates when you engage in Location Lock tasks (e.g. visiting a gym, library, or park).</li>
+            <li><strong>Purpose:</strong> To verify that you have arrived at your designated destination to earn focus credits.</li>
+            <li><strong>Storage:</strong> Merit does not track your ongoing location history in the background for surveillance or commercial profiling.</li>
+          </ul>
+
+          <h4>2.5 Physical Activity & Health Connect (<code>ACTIVITY_RECOGNITION</code>, <code>health.READ_STEPS</code>)</h4>
+          <ul>
+            <li><strong>What We Access:</strong> Step counts and walking/running distances through Android Activity Recognition, device pedometers, and optional Google Health Connect sync.</li>
+            <li><strong>Purpose:</strong> To calculate earned screen time based on your physical steps and movement.</li>
+            <li><strong>Storage:</strong> Step totals are stored locally in the App's secure preferences.</li>
+          </ul>
+
+          <h4>2.6 Authentication & Account Data (Firebase Auth & Google Sign-In)</h4>
+          <ul>
+            <li><strong>What We Access:</strong> Your Google account name, email address, unique Firebase User ID (UID), and profile picture URL.</li>
+            <li><strong>Purpose:</strong> To authenticate your account, secure your identity, and display your chosen username and avatar on your personal profile and stats.</li>
+            <li><strong>Security:</strong> Handled directly by Google Firebase Authentication in compliance with industry-standard TLS encryption.</li>
+          </ul>
+
+          <hr>
+
+          <h3>3. THIRD-PARTY SERVICES & INTEGRATIONS</h3>
+          <p>Merit integrates with trusted third-party providers for specific functions:</p>
+          <ul>
+            <li><strong>Google Firebase Authentication:</strong> Manages secure sign-in and user authentication (Google Privacy Policy).</li>
+            <li><strong>Google ML Kit:</strong> Performs on-device machine learning pose detection (Google ML Kit Terms).</li>
+            <li><strong>OpenStreetMap & FlutterMap:</strong> Renders map tiles during location-based tasks.</li>
+          </ul>
+
+          <hr>
+
+          <h3>4. DATA RETENTION & SECURITY</h3>
+          <ul>
+            <li><strong>Local Storage:</strong> All app preferences, time banks, credits, and streak history are stored in Android secure app-private storage (<code>SharedPreferences</code>).</li>
+            <li><strong>Security:</strong> We apply strict technical and organizational safeguards against unauthorized access, loss, or alteration.</li>
+            <li><strong>Data Deletion:</strong> You can delete your local data at any time by clearing the application storage in Android Settings or using the Sign Out option in Settings.</li>
+          </ul>
+
+          <hr>
+
+          <h3>5. CHILDREN'S PRIVACY (COPPA & GDPR)</h3>
+          <p>Merit is not directed to children under the age of 13 (or 16 in the European Economic Area). We do not knowingly collect personal information from children under these ages. If we become aware that a child has provided us with personal information, we will delete it promptly.</p>
+
+          <hr>
+
+          <h3>6. YOUR RIGHTS (GDPR & CCPA/CPRA)</h3>
+          <p>Depending on your jurisdiction, you have the right to:</p>
+          <ul>
+            <li>Access the personal data we hold about you.</li>
+            <li>Request deletion or correction of your personal data.</li>
+            <li>Revoke previously granted permissions (Usage Stats, Camera, Location) at any time via Android System Settings.</li>
+          </ul>
+
+          <hr>
+
+          <h3>7. CONTACT & INQUIRIES</h3>
+          <p>If you have questions, concerns, or requests regarding this Privacy Policy, please contact the development team at:</p>
+          <div class="contact-card">
+            <div><strong>Email:</strong> <a href="mailto:ngenzsupport@gmail.com">ngenzsupport@gmail.com</a></div>
+            <div><strong>Support:</strong> Merit Privacy Team</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- 3. TERMS OF SERVICE VIEW -->
+    <!-- ========================================== -->
+    <div id="view-terms" class="view-section">
+      <div class="legal-container">
+        <div class="legal-header">
+          <span class="legal-tag">User Agreement</span>
+          <h1>Terms of Service</h1>
+          <div class="legal-meta">Last Updated: August 13, 2026 • Effective Date: August 13, 2026</div>
+        </div>
+
+        <div class="legal-body">
+          <p>Please read these Terms of Service ("Terms", "Agreement") carefully before downloading, accessing, or using the <strong>Merit</strong> mobile application ("the App", "Service", "we", "us", or "our").</p>
+          <p>By installing, accessing, or using Merit, you agree to be bound by these Terms. If you do not agree to these Terms, do not install or use the Service.</p>
+
+          <hr>
+
+          <h3>1. ELIGIBILITY & ACCEPTANCE</h3>
+          <p>You must be at least 13 years of age (or the minimum legal age required in your country) to use Merit. By using the App, you represent and warrant that you have the legal capacity to enter into a binding contract and that you will comply with all applicable local, national, and international laws.</p>
+
+          <hr>
+
+          <h3>2. MEDICAL & FITNESS DISCLAIMER (CRITICAL NOTICE)</h3>
+          <div class="alert-box">
+            <strong>IMPORTANT MEDICAL NOTICE:</strong> Merit is a digital productivity, habit-building, and screen time management tool. Merit is NOT a medical device, licensed physician, personal trainer, or healthcare provider.
+          </div>
+          <ul>
+            <li><strong>Inherent Physical Risk:</strong> Any physical exercise, workout routine, or outdoor activity (including, but not limited to, planks, walking, running, and cycling) carries inherent risks of physical injury, strain, cardiovascular stress, muscle damage, property damage, or death.</li>
+            <li><strong>Consult Your Physician:</strong> You should consult a qualified healthcare professional before beginning any physical challenge, especially if you have pre-existing cardiovascular conditions, joint disorders, pregnancy, or respiratory issues.</li>
+            <li><strong>Assumption of Risk:</strong> <strong>You voluntarily assume all risks, known and unknown, associated with your participation in any fitness task, exercise, or challenge provided within Merit.</strong></li>
+            <li><strong>Complete Release of Liability:</strong> To the maximum extent permitted by applicable law, Merit, its founders, developers, contributors, and affiliates expressly disclaim all liability for any personal injury, illness, muscle strain, sprain, accident, or damage resulting directly or indirectly from your use of the App or adherence to any task.</li>
+          </ul>
+
+          <hr>
+
+          <h3>3. APP BLOCKING & STRICT MODE ACKNOWLEDGMENT</h3>
+          <ul>
+            <li><strong>Intentional Restriction:</strong> Merit includes features designed to intercept and restrict access to third-party applications and device functions when your time banks or screen time credits are depleted.</li>
+            <li><strong>Strict Mode & Device Admin:</strong> When Strict Mode is enabled, the App utilizes Android Device Administrator permissions to inhibit uninstallation during active sessions.</li>
+            <li><strong>Waiver of Communication Claims:</strong> <strong>You acknowledge and agree that Merit is not liable for any missed telephone calls, emergency alerts, text messages, scheduled notifications, alarms, emails, business opportunities, or financial damages resulting from blocked applications or scheduled restriction periods.</strong></li>
+            <li><strong>Emergency Calls:</strong> Merit is configured to never interfere with primary system emergency dialers. However, you are responsible for ensuring you have access to emergency communication channels.</li>
+          </ul>
+
+          <hr>
+
+          <h3>4. USER ACCOUNTS & CODE OF CONDUCT</h3>
+          <ul>
+            <li><strong>Account Integrity:</strong> If you create an account using Google Sign-In, you are responsible for maintaining the confidentiality of your login credentials.</li>
+            <li><strong>Usernames & Avatars:</strong> You agree not to select or display usernames, profile images, or text that are defamatory, offensive, hateful, sexually explicit, infringing on intellectual property, or impersonating another person. We reserve the right to suspend or remove any offending profile.</li>
+          </ul>
+
+          <hr>
+
+          <h3>5. INTELLECTUAL PROPERTY RIGHTS</h3>
+          <p>All software code, visual designs, icons, trademarks, animations, audio cues, graphics, shaders, and UI layouts comprising Merit are the proprietary intellectual property of Merit and its licensors. You are granted a limited, revocable, non-exclusive, non-transferable license to use the App solely for personal, non-commercial productivity purposes.</p>
+
+          <hr>
+
+          <h3>6. CREDITS AND VIRTUAL SCREEN TIME</h3>
+          <ul>
+            <li>Merit provides virtual credits, earned minutes, and streak counters.</li>
+            <li><strong>Zero Monetary Value:</strong> All credits and minutes earned in Merit are purely virtual motivation metrics. They carry <strong>zero cash, monetary, or financial value</strong>, and cannot be redeemed, traded, transferred, or refunded for real currency under any circumstances.</li>
+          </ul>
+
+          <hr>
+
+          <h3>7. DISCLAIMER OF WARRANTIES ("AS IS")</h3>
+          <p>THE SERVICE IS PROVIDED ON AN <strong>"AS IS"</strong> AND <strong>"AS AVAILABLE"</strong> BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, ACCURACY OF USAGE STATS, BATTERY EFFICIENCY, AND NON-INFRINGEMENT. WE DO NOT GUARANTEE THAT THE SERVICE WILL BE UNINTERRUPTED, ERROR-FREE, OR SECURE.</p>
+
+          <hr>
+
+          <h3>8. LIMITATION OF LIABILITY</h3>
+          <p>TO THE FULLEST EXTENT PERMITTED BY LAW, IN NO EVENT SHALL MERIT, ITS CREATORS, DIRECTORS, EMPLOYEES, OR AGENTS BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, EXEMPLARY, OR PUNITIVE DAMAGES (INCLUDING LOSS OF PROFITS, DATA, GOODWILL, OR OTHER INTANGIBLE LOSSES) ARISING OUT OF OR IN CONNECTION WITH YOUR USE OF OR INABILITY TO USE THE APP.</p>
+
+          <hr>
+
+          <h3>9. INDEMNIFICATION</h3>
+          <p>You agree to defend, indemnify, and hold harmless Merit and its developers from and against any claims, liabilities, damages, losses, costs, or expenses (including reasonable legal fees) arising out of your violation of these Terms or misuse of the App.</p>
+
+          <hr>
+
+          <h3>10. GOVERNING LAW & DISPUTE RESOLUTION</h3>
+          <p>These Terms shall be governed by and construed in accordance with the laws of the jurisdiction in which the developer resides, without regard to its conflict of law principles. Any dispute arising out of or relating to these Terms shall be resolved through binding confidential arbitration.</p>
+
+          <hr>
+
+          <h3>11. MODIFICATIONS TO TERMS</h3>
+          <p>We reserve the right to update or modify these Terms at any time. If changes are material, we will provide notice through the App. Continued use of the App following any modifications constitutes your acceptance of the revised Terms.</p>
+
+          <hr>
+
+          <h3>12. CONTACT INFORMATION</h3>
+          <p>For questions, support, or legal notices, please contact:</p>
+          <div class="contact-card">
+            <div><strong>Email:</strong> <a href="mailto:ngenzsupport@gmail.com">ngenzsupport@gmail.com</a></div>
+            <div><strong>Support:</strong> Merit Legal Team</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-links">
+      <a onclick="switchTab('home')">Home</a>
+      <a onclick="switchTab('privacy')">Privacy Policy</a>
+      <a onclick="switchTab('terms')">Terms of Service</a>
+      <a href="mailto:ngenzsupport@gmail.com">Support (ngenzsupport@gmail.com)</a>
+    </div>
+    <div class="footer-copy">
+      &copy; 2026 Merit. All rights reserved. • Built for athletes and focused minds.
+    </div>
+  </footer>
+
+  <!-- SCRIPT FOR SEAMLESS TAB SWITCHING & URL HASH SUPPORT -->
+  <script>
+    function switchTab(tabId) {
+      // Hide all views
+      document.querySelectorAll('.view-section').forEach(function(el) {
+        el.classList.remove('active');
+      });
+      // Remove active from all tab buttons
+      document.querySelectorAll('.tab-btn').forEach(function(el) {
+        el.classList.remove('active');
+      });
+
+      // Show selected view
+      var targetView = document.getElementById('view-' + tabId);
+      var targetBtn = document.getElementById('tab-btn-' + tabId);
+      if (targetView) {
+        targetView.classList.add('active');
+      }
+      if (targetBtn) {
+        targetBtn.classList.add('active');
+      }
+
+      // Update URL hash without reload
+      if (history.pushState) {
+        history.pushState(null, null, '#' + tabId);
+      } else {
+        location.hash = '#' + tabId;
+      }
+
+      // Scroll smoothly to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Check hash on load (e.g., #privacy, #terms, #home)
+    window.addEventListener('DOMContentLoaded', function() {
+      var hash = window.location.hash.replace('#', '').toLowerCase();
+      if (hash === 'privacy' || hash === 'terms' || hash === 'home') {
+        switchTab(hash);
+      }
+    });
+
+    window.addEventListener('popstate', function() {
+      var hash = window.location.hash.replace('#', '').toLowerCase();
+      if (hash === 'privacy' || hash === 'terms' || hash === 'home') {
+        switchTab(hash);
+      } else {
+        switchTab('home');
+      }
+    });
+  </script>
+</body>
+</html>
